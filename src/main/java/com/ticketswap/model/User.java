@@ -8,13 +8,12 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 
-
 @Entity(name = "ticketswap_user")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TicketswapUser {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,15 +21,20 @@ public class TicketswapUser {
     @Column(name = "first_name")
     private String firstName;
 
-    @Column(nullable = false, unique = true, name = "last_name")
+    @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "email")
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role")
-    private UserRole role;
+    @Column(name = "profile_pic_url")
+    private String profilePicUrl;
+
+    @Column(name = "external_id")
+    private String externalId;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
@@ -38,4 +42,3 @@ public class TicketswapUser {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 }
-

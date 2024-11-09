@@ -28,6 +28,7 @@ dependencies {
 	implementation("org.springframework.session:spring-session-core")
 	implementation("me.paulschwarz:spring-dotenv:3.0.0")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")

@@ -26,4 +26,8 @@ public class Category {
 
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "parent_category")
+    private Category parentCategory;
 }
