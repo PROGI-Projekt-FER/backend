@@ -27,6 +27,14 @@ public class Event {
     @Column(name =  "event_date", nullable = false)
     private Timestamp event_date;
 
+    @ManyToOne
+    @JoinColumn(name = "venue_id")
+    private Venue venue;
+
+    @ManyToOne
+    @JoinColumn(name = "event_entity_id")
+    private EventEntity eventEntity;
+
     @Column(name = "created_at")
     private Timestamp createdAt;
 

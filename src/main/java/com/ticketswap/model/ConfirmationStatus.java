@@ -1,5 +1,5 @@
 package com.ticketswap.model;
 
-public enum Status {
+public enum ConfirmationStatus {
     PENDING, APPROVED, CANCELED
 }

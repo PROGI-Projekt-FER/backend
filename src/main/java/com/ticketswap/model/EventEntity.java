@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.sql.Timestamp;
 
 
-@Entity(name = "location")
+@Entity(name = "event_entity")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,10 +18,6 @@ public class EventEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @ManyToOne
-    @JoinColumn(name = "event_id")
-    private Event event;
 
     @Column(name = "entity_type", nullable = false)
     private String entitytype;

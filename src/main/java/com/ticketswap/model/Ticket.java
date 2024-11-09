@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 
 @Entity(name = "ticket")
@@ -21,7 +22,7 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private TicketswapUser user;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "event_id")
@@ -39,5 +40,9 @@ public class Ticket {
 
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "ticket_category", joinColumns = @JoinColumn(name = "ticket_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<Category> categories;
 
 }

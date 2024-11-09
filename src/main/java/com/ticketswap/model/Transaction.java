@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.sql.Timestamp;
 
 
-@Entity(name = "ticket")
+@Entity(name = "transaction")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,15 +25,7 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "buyer_id")
-    private TicketswapUser buyer;
-
-    @ManyToOne
-    @JoinColumn(name = "seller_id")
-    private TicketswapUser seller;
-
-    @Enumerated(EnumType.STRING)
-    @JoinColumn(name = "transaction_type")
-    private TransactionType transactionType;
+    private User buyer;
 
     @Column(name = "created_at")
     private Timestamp createdAt;

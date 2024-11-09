@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.sql.Timestamp;
 
 
-@Entity(name = "location")
+@Entity(name = "swap_request")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,20 +24,16 @@ public class SwapRequest {
     private SwapCycle swapCycle;
 
     @ManyToOne
-    @JoinColumn(name = "ticket_id")
-    private Ticket ticket;
+    @JoinColumn(name = "receiving_ticket_id")
+    private Ticket receivingTicket;
 
     @ManyToOne
-    @JoinColumn(name = "requested_ticket_id")
-    private Ticket requestedTicket;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private TicketswapUser user;
+    @JoinColumn(name = "sending_ticket_id")
+    private Ticket sendingTicket;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private Status status = Status.PENDING;
+    private ConfirmationStatus confirmationStatus = ConfirmationStatus.PENDING;
 
     @Column(name = "created_at")
     private Timestamp createdAt;

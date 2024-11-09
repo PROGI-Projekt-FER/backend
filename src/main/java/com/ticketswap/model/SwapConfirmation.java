@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.sql.Timestamp;
-@Entity(name = "location")
+@Entity(name = "swap_confirmation")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,13 +21,9 @@ public class SwapConfirmation {
     @JoinColumn(name = "swap_request_id")
     private SwapRequest swapRequest;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private TicketswapUser user;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private Status status = Status.PENDING;
+    private ConfirmationStatus confirmationStatus = ConfirmationStatus.PENDING;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
