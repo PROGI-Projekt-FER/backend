@@ -17,13 +17,13 @@ import java.sql.Timestamp;
 public class EventEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "entity_type", nullable = false)
-    private String entitytype;
+    @Column(name = "entity_type")
+    private String type;
 
-    @Column(name = "entity_name", nullable = false)
-    private String entityName;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
