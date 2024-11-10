@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Notification {
+public class Notification extends BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

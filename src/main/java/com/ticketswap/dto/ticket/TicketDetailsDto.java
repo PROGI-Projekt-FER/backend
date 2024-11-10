@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -25,8 +25,8 @@ public class TicketDetailsDto {
     private TicketStatus status;
     private String description;
     private double price;
-    private Timestamp lastChangedAt;
-    private Timestamp postedAt;
+    private LocalDateTime lastChangedAt;
+    private LocalDateTime postedAt;
     private List<CategoryDto> categories;
 
     public static TicketDetailsDto map(Ticket ticket) {
