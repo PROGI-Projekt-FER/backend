@@ -18,14 +18,14 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title")
     private String title;
 
     @Column(name = "description")
     private String description;
 
     @Column(name =  "event_date", nullable = false)
-    private Timestamp event_date;
+    private Timestamp eventDate;
 
     @ManyToOne
     @JoinColumn(name = "venue_id")

@@ -32,6 +32,9 @@ public class Ticket {
     @Column(name = "status")
     private TicketStatus status;
 
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "price")
     private double price;
 
@@ -41,7 +44,7 @@ public class Ticket {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "ticket_category", joinColumns = @JoinColumn(name = "ticket_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Category> categories;
 

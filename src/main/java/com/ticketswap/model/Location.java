@@ -18,13 +18,16 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "country", nullable = false)
+    private String country;
+
     @Column(name = "city", nullable = false)
     private String city;
 
-    @Column(name = "postal_code", nullable = false)
+    @Column(name = "postal_code")
     private String postal_code;
 
-    @Column(name = "address", nullable = false)
+    @Column(name = "address")
     private String address;
 
     @Column(name = "created_at")
