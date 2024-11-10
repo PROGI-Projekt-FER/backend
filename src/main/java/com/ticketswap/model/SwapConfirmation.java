@@ -5,14 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.sql.Timestamp;
 @Entity(name = "swap_confirmation")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class SwapConfirmation {
+public class SwapConfirmation extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -24,10 +23,4 @@ public class SwapConfirmation {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ConfirmationStatus confirmationStatus = ConfirmationStatus.PENDING;
-
-    @Column(name = "created_at")
-    private Timestamp createdAt;
-
-    @Column(name = "updated_at")
-    private Timestamp updatedAt;
 }

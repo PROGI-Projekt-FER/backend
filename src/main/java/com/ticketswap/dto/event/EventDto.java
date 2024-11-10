@@ -4,14 +4,13 @@ import com.ticketswap.dto.event_entity.EventEntityDto;
 import com.ticketswap.dto.location.LocationDto;
 import com.ticketswap.dto.venue.VenueDto;
 import com.ticketswap.model.Event;
-import com.ticketswap.model.EventEntity;
-import com.ticketswap.model.Venue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
@@ -22,7 +21,7 @@ public class EventDto {
     private Long id;
     private String title;
     private String description;
-    private Timestamp eventDate;
+    private LocalDateTime eventDate;
     private VenueDto venue;
     private EventEntityDto eventEntity;
 

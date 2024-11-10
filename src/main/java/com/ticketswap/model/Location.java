@@ -5,15 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
-
 
 @Entity(name = "location")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Location {
+public class Location extends BaseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,9 +28,4 @@ public class Location {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "created_at")
-    private Timestamp createdAt;
-
-    @Column(name = "updated_at")
-    private Timestamp updatedAt;
 }
