@@ -21,11 +21,11 @@ public class RootController {
     }
 
     @GetMapping("/test-user")
-    public String getUserFromDb(@AuthenticationPrincipal CustomOAuth2User principal) {
+    public ResponseEntity<String> getUserFromDb(@AuthenticationPrincipal CustomOAuth2User principal) {
         if (principal != null) {
-            return "Currently logged in: " + principal.getName();
+            return ResponseEntity.ok("Currently logged in: " + principal.getName());
         } else {
-            return "Not logged in";
+            return ResponseEntity.ok("Not logged in");
         }
     }
 }
