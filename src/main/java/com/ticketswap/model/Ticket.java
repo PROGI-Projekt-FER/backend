@@ -41,4 +41,8 @@ public class Ticket extends BaseModel{
     @JoinTable(name = "ticket_category", joinColumns = @JoinColumn(name = "ticket_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Category> categories;
 
+    @ManyToMany(cascade = CascadeType.REFRESH)
+    @JoinTable(name = "ticket_category_interest", joinColumns = @JoinColumn(name = "ticket_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<Category> interestedInCategories;
+
 }

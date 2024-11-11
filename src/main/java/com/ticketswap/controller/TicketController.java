@@ -1,6 +1,7 @@
 package com.ticketswap.controller;
 
 import com.ticketswap.dto.ticket.TicketDetailsDto;
+import com.ticketswap.dto.ticket.TicketInsertDto;
 import com.ticketswap.dto.ticket.TicketSearchDto;
 import com.ticketswap.model.CustomOAuth2User;
 import com.ticketswap.service.TicketService;
@@ -27,16 +28,16 @@ public class TicketController {
         return ResponseEntity.ok(ticketService.searchTickets());
     }
 
-    @GetMapping("/:ticketId")
+    @GetMapping("/{ticketId}")
     public ResponseEntity<TicketDetailsDto> getTicketDetails(@PathVariable("ticketId") Long ticketId) {
         return ResponseEntity.ok(ticketService.getTicketById(ticketId));
     }
 
     @PostMapping
-    public ResponseEntity<TicketDetailsDto> createTicket(@RequestBody TicketDetailsDto ticketDetailsDto) {
+    public ResponseEntity<TicketDetailsDto> createTicket(@RequestBody TicketInsertDto ticketInsertDto) {
     // TODO: uncomment this and set user to principal.getUser()
 //     if (principal == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        TicketDetailsDto createdTicket = ticketService.createTicket(ticketDetailsDto, null);
+        TicketDetailsDto createdTicket = ticketService.createTicket(ticketInsertDto, null);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTicket);
     }
 }
