@@ -2,6 +2,7 @@ package com.ticketswap.config;
 
 import com.ticketswap.service.CustomOAuth2UserService;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -15,9 +16,13 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.session.web.http.CookieSerializer;
+import org.springframework.session.web.http.DefaultCookieSerializer;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @EnableWebSecurity
 @Configuration
@@ -62,10 +67,23 @@ class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        // Redirect to frontend with the cookie
-        String frontendRedirectUrl = "http://localhost:3000/home"; // Adjust this URL based on your frontend address
+        // Extract user details from the Authentication object
+        Object principal = authentication.getPrincipal();
 
-        // Optionally, you can add parameters to the redirect URL
+        String username = "";
+        String email = "";
+        if (principal instanceof OAuth2User) {
+            OAuth2User oAuth2User = (OAuth2User) principal;
+            // Access user attributes (e.g., email, name, etc.)
+            username = oAuth2User.getAttribute("name"); // Change "name" to the key for the attribute you need
+            email = oAuth2User.getAttribute("email"); // Change "name" to the key for the attribute you need
+        }
+
+        // Encode parameters to ensure special characters are handled correctly
+        String encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8);
+        String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8);
+        // Redirect to frontend with the username as a parameter (adjust as needed)
+        String frontendRedirectUrl = "https://frontend-edlb.onrender.com?username=" + encodedUsername + "&email=" + encodedEmail;
         response.sendRedirect(frontendRedirectUrl);
     }
 }
