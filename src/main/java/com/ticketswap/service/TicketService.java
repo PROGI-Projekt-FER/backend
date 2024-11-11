@@ -1,6 +1,7 @@
 package com.ticketswap.service;
 
 import com.ticketswap.dto.ticket.TicketDetailsDto;
+import com.ticketswap.dto.ticket.TicketInsertDto;
 import com.ticketswap.dto.ticket.TicketSearchDto;
 import com.ticketswap.dto.user.UsernameDto;
 import com.ticketswap.model.Ticket;
@@ -31,9 +32,8 @@ public class TicketService {
         throw new ResourceNotFoundException("Ticket with id " + ticketId + " not found.");
     }
 
-    public TicketDetailsDto createTicket(TicketDetailsDto ticketDetailsDto, User user) {
+    public TicketDetailsDto createTicket(TicketInsertDto ticketDetailsDto, User user) {
         // TODO set user to the one in parameters
-        ticketDetailsDto.setPostedByUser(UsernameDto.map(userRepository.findById(1L).get()));
         Ticket ticket = ticketDetailsDto.toEntity();
         ticket.setId(null);
         ticket.setUser(userRepository.findById(1L).get());

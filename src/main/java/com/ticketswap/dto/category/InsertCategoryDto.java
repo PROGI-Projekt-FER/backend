@@ -10,21 +10,17 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryDto {
+public class InsertCategoryDto {
 
     private Long id;
     private String name;
     private Long parentCategoryId;
-    private String parentCategoryName;
 
-    public static CategoryDto map(Category category) {
-        CategoryDto categoryDto = new CategoryDto();
+    public static InsertCategoryDto map(Category category) {
+        InsertCategoryDto categoryDto = new InsertCategoryDto();
         categoryDto.setId(category.getId());
         categoryDto.setName(category.getName());
-        if (category.getParentCategory() != null) {
-            categoryDto.setParentCategoryId(category.getParentCategory().getId());
-            categoryDto.setParentCategoryName(category.getParentCategory().getName());
-        }
+        categoryDto.setParentCategoryId(category.getParentCategory().getId());
         return categoryDto;
     }
 
@@ -32,7 +28,9 @@ public class CategoryDto {
         Category category = new Category();
         category.setId(id);
         category.setName(name);
-        category.setParentCategory(new Category(parentCategoryId, parentCategoryName, null));
+        if (parentCategoryId != null) {
+            category.setParentCategory(new Category(parentCategoryId, null, null));
+        }
         return category;
     }
 }
