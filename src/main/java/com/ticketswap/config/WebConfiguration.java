@@ -10,7 +10,7 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://frontend-edlb.onrender.com", "http://localhost:3000")
+                .allowedOrigins("https://frontend-edlb.onrender.com", "http://localhost:3000", "http://localhost:80", "https://ticketswap-frontend-koxq.onrender.com")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);

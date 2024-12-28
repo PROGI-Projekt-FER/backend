@@ -83,7 +83,26 @@ class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8);
         String encodedEmail = URLEncoder.encode(email, StandardCharsets.UTF_8);
         // Redirect to frontend with the username as a parameter (adjust as needed)
-        String frontendRedirectUrl = "https://frontend-edlb.onrender.com?username=" + encodedUsername + "&email=" + encodedEmail;
+//        String frontendRedirectUrl = "https://frontend-edlb.onrender.com?username=" + encodedUsername + "&email=" + encodedEmail;
+        String frontendRedirectUrl = "https://ticketswap-frontend-koxq.onrender.com";
+//        Cookie cookie = new Cookie(
+//                "my_cookie",
+//                "12345678"
+//        );
+//        cookie.setSecure(true);
+//        response.addCookie(cookie);
+//        response.addHeader("Set-Cookie", String.format("%s; SameSite=None", cookieToString(cookie)));
         response.sendRedirect(frontendRedirectUrl);
+    }
+
+    // Helper method to convert Cookie to a string
+    private String cookieToString(Cookie cookie) {
+        return String.format("%s=%s; Path=%s; %s %s",
+                cookie.getName(),
+                cookie.getValue(),
+                cookie.getPath(),
+                cookie.isHttpOnly() ? "HttpOnly;" : "",
+                cookie.getSecure() ? "Secure;" : ""
+        );
     }
 }

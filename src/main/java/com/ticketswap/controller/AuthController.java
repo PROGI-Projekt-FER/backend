@@ -1,6 +1,7 @@
 package com.ticketswap.controller;
 
 import com.ticketswap.model.CustomOAuth2User;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,6 +29,12 @@ public class AuthController {
         String email = customUser.getAttribute("email");
         Collection<? extends GrantedAuthority> authorities = customUser.getAuthorities();
         return "User email: " + email + ", Roles: " + authorities;
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        request.getSession().invalidate();
+        return ResponseEntity.ok("logged out");
     }
 
 }
