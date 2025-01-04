@@ -1,7 +1,10 @@
 package com.ticketswap.controller;
 
 import com.ticketswap.model.CustomOAuth2User;
+import com.ticketswap.model.User;
+import com.ticketswap.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,21 +17,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 public class AuthController {
 
+    @Autowired
+    private AuthService authService;
     @GetMapping("/user")
-    public OAuth2User getLoggedInUser(@AuthenticationPrincipal OAuth2User principal) {
-        return principal;
+    public Optional<User> getLoggedInUser() {
+        return authService.getLoggedInUser();
     }
-
     @GetMapping("/user/info")
-    public String getUserInfo(@AuthenticationPrincipal CustomOAuth2User customUser) {
-        String email = customUser.getAttribute("email");
-        Collection<? extends GrantedAuthority> authorities = customUser.getAuthorities();
-        return "User email: " + email + ", Roles: " + authorities;
+    public ResponseEntity<User> getUserInfo() {
+        Optional<User> user = authService.getLoggedInUser();
+        if (user.isPresent()) return ResponseEntity.ok(user.get());
+        else return ResponseEntity.status(401).body(null);
     }
 
     @PostMapping("/logout")
