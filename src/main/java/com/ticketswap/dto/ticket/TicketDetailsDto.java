@@ -3,6 +3,7 @@ package com.ticketswap.dto.ticket;
 import com.ticketswap.dto.category.CategoryDto;
 import com.ticketswap.dto.event.EventDto;
 import com.ticketswap.dto.user.UsernameDto;
+import com.ticketswap.dto.weather.WeatherByCityDto;
 import com.ticketswap.model.Ticket;
 import com.ticketswap.model.TicketStatus;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class TicketDetailsDto {
     private LocalDateTime postedAt;
     private List<CategoryDto> categories;
     private List<CategoryDto> interestedInCategories;
+    private WeatherByCityDto weather;
 
     public static TicketDetailsDto map(Ticket ticket) {
         TicketDetailsDto dto = new TicketDetailsDto();

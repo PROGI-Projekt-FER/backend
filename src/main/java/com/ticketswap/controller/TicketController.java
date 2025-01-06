@@ -41,6 +41,22 @@ public class TicketController {
         return ResponseEntity.ok(ticketService.getTicketById(ticketId));
     }
 
+    @PutMapping("/{ticketId}")
+    public ResponseEntity<TicketDetailsDto> updateTicket(@RequestBody TicketInsertDto ticketInsertDto, @PathVariable("ticketId") Long ticketId) {
+        Optional<User> loggedInUser = authService.getLoggedInUser();
+        if (loggedInUser.isEmpty()) throw new NotLoggedInException();
+        ticketInsertDto.setId(ticketId);
+        return ResponseEntity.ok(ticketService.updateTicket(ticketInsertDto));
+    }
+
+    @DeleteMapping("/{ticketId}")
+    public ResponseEntity<String> deleteTicket(@PathVariable("ticketId") Long ticketId) {
+        Optional<User> loggedInUser = authService.getLoggedInUser();
+        if (loggedInUser.isEmpty()) throw new NotLoggedInException();
+        ticketService.deleteTicket(ticketId);
+        return ResponseEntity.ok("Successfully deleted ticket with id = " + ticketId);
+    }
+
     @PostMapping
     public ResponseEntity<TicketDetailsDto> createTicket(@RequestBody TicketInsertDto ticketInsertDto) {
         Optional<User> loggedInUser = authService.getLoggedInUser();

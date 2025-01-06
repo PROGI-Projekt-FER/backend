@@ -14,6 +14,7 @@ import com.ticketswap.util.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +37,29 @@ public class TicketService {
         }
         throw new ResourceNotFoundException("Ticket with id " + ticketId + " not found.");
     }
+
+    public TicketDetailsDto updateTicket(TicketInsertDto ticketInsertDto) {
+        Ticket ticket = ticketInsertDto.toEntity();
+        Optional<Ticket> existingTicket = ticketRepository.findById(ticket.getId());
+        User loggedInUser = authService.getLoggedInUser().get();
+        if (existingTicket.isEmpty() || !existingTicket.get().getUser().getId().equals(loggedInUser.getId()))
+            throw new ResourceNotFoundException(String.format("Ticket with id = %s does not exist or is not yours", ticket.getId().toString()));
+        ticket.setCategories(categoryRepository.findAllById(ticket.getCategories().stream().map(Category::getId).toList()));
+        ticket.setInterestedInCategories(categoryRepository.findAllById(ticket.getInterestedInCategories().stream().map(Category::getId).toList()));
+        ticket.setUser(loggedInUser);
+        ticket = ticketRepository.save(ticket);
+        return TicketDetailsDto.map(ticket);
+    }
+
+    public void deleteTicket(Long ticketId) {
+        Optional<Ticket> existingTicket = ticketRepository.findById(ticketId);
+        User loggedInUser = authService.getLoggedInUser().get();
+        if (existingTicket.isEmpty() || !existingTicket.get().getUser().getId().equals(loggedInUser.getId()))
+            throw new ResourceNotFoundException(String.format("Ticket with id = %s does not exist or is not yours", ticketId));
+        ticketRepository.delete(existingTicket.get());
+    }
+
+
 
     public TicketDetailsDto createTicket(TicketInsertDto ticketDetailsDto) {
         Ticket ticket = ticketDetailsDto.toEntity();
