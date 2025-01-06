@@ -27,5 +27,4 @@ public class Location extends BaseModel {
 
     @Column(name = "address")
     private String address;
-
 }
