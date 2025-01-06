@@ -1,6 +1,7 @@
 package com.ticketswap.dto.notification;
 
 import com.ticketswap.model.Notification;
+import com.ticketswap.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,5 +21,14 @@ public class NotificationDto {
         dto.setId(notif.getId());
         dto.setMessage(notif.getMessage());
         return dto;
+    }
+
+    public Notification toEntity(User user) {
+        Notification notification = new Notification();
+        notification.setId(id);
+        notification.setMessage(message);
+        notification.setUser(user);
+        notification.setSeenByUser(false);
+        return notification;
     }
 }
