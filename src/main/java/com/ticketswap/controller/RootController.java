@@ -20,12 +20,4 @@ public class RootController {
         return ResponseEntity.ok("Api is running");
     }
 
-    @GetMapping("/test-user")
-    public ResponseEntity<String> getUserFromDb(@AuthenticationPrincipal CustomOAuth2User principal) {
-        if (principal != null) {
-            return ResponseEntity.ok("Currently logged in: " + principal.getName());
-        } else {
-            return ResponseEntity.ok("Not logged in");
-        }
-    }
 }

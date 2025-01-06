@@ -3,9 +3,11 @@ package com.ticketswap.controller;
 import com.ticketswap.model.CustomOAuth2User;
 import com.ticketswap.model.User;
 import com.ticketswap.service.AuthService;
+import com.ticketswap.util.NotLoggedInException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -29,11 +31,12 @@ public class AuthController {
     public Optional<User> getLoggedInUser() {
         return authService.getLoggedInUser();
     }
+
     @GetMapping("/user/info")
     public ResponseEntity<User> getUserInfo() {
-        Optional<User> user = authService.getLoggedInUser();
-        if (user.isPresent()) return ResponseEntity.ok(user.get());
-        else return ResponseEntity.status(401).body(null);
+        Optional<User> loggedInUser = authService.getLoggedInUser();
+        if (loggedInUser.isEmpty()) throw new NotLoggedInException();
+        return ResponseEntity.ok(loggedInUser.get());
     }
 
     @PostMapping("/logout")

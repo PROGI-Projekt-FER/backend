@@ -27,7 +27,7 @@ public class TicketService {
     private CategoryRepository categoryRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private AuthService authService;
 
     public TicketDetailsDto getTicketById(Long ticketId) {
         Optional<Ticket> ticket = ticketRepository.findById(ticketId);
@@ -37,13 +37,12 @@ public class TicketService {
         throw new ResourceNotFoundException("Ticket with id " + ticketId + " not found.");
     }
 
-    public TicketDetailsDto createTicket(TicketInsertDto ticketDetailsDto, User user) {
-        // TODO set user to the one in parameters
+    public TicketDetailsDto createTicket(TicketInsertDto ticketDetailsDto) {
         Ticket ticket = ticketDetailsDto.toEntity();
         ticket.setId(null);
-        ticket.setUser(userRepository.findById(1L).get());
         ticket.setCategories(categoryRepository.findAllById(ticket.getCategories().stream().map(Category::getId).toList()));
         ticket.setInterestedInCategories(categoryRepository.findAllById(ticket.getInterestedInCategories().stream().map(Category::getId).toList()));
+        ticket.setUser(authService.getLoggedInUser().get());
         ticket = ticketRepository.save(ticket);
         return TicketDetailsDto.map(ticket);
     }
