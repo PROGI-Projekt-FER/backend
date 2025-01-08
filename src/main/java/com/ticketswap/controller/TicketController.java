@@ -1,10 +1,6 @@
 package com.ticketswap.controller;
 
-import com.ticketswap.dto.ticket.TicketDetailsDto;
-import com.ticketswap.dto.ticket.TicketInsertDto;
-import com.ticketswap.dto.ticket.TicketSearchDto;
-import com.ticketswap.dto.ticket.TicketWeatherResponseDto;
-import com.ticketswap.dto.ticket.UpdateTicketStatusDto;
+import com.ticketswap.dto.ticket.*;
 import com.ticketswap.model.CustomOAuth2User;
 import com.ticketswap.model.TicketStatus;
 import com.ticketswap.model.User;
@@ -19,6 +15,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,9 +32,26 @@ public class TicketController {
 
     @GetMapping
     public ResponseEntity<List<TicketSearchDto>> searchTickets(
-    // TODO: add filters in query params
+            @RequestParam(name = "categories", defaultValue = "") List<Long> categoryIds,
+            @RequestParam(name = "offerTypes", defaultValue = "SELL,SWAP") List<TicketStatus> offerTypes,
+            @RequestParam(name = "priceMin", defaultValue = "0") Integer priceMin,
+            @RequestParam(name = "priceMax", defaultValue = "1000000") Integer priceMax,
+            @RequestParam(name = "countries", defaultValue = "") List<String> countries,
+            @RequestParam(name = "cities", defaultValue = "") List<String> cities,
+            @RequestParam(name = "startDate", defaultValue = "1990-01-01T00:00:00") LocalDateTime startDate,
+            @RequestParam(name = "endDate", defaultValue = "2100-01-01T00:00:00") LocalDateTime endDate
     ) {
-        return ResponseEntity.ok(ticketService.searchTickets());
+        TicketSearchParams searchParams = new TicketSearchParams();
+        searchParams.setCategoryIds(categoryIds);
+        searchParams.setOfferTypes(offerTypes);
+        searchParams.setPriceMin(priceMin);
+        searchParams.setPriceMax(priceMax);
+        searchParams.setCountries(countries);
+        searchParams.setCities(cities);
+        searchParams.setStartDate(startDate);
+        searchParams.setEndDate(endDate);
+
+        return ResponseEntity.ok(ticketService.searchTickets(searchParams));
     }
 
     @GetMapping("/{ticketId}")

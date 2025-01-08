@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,8 +93,38 @@ public class TicketService {
         return TicketDetailsDto.map(ticket);
     }
 
-    public List<TicketSearchDto> searchTickets() {
-        List<TicketSearchDto> tickets = ticketRepository.findAll().stream().map(TicketSearchDto::map).toList();
+    public List<TicketSearchDto> searchTickets(TicketSearchParams searchParams) {
+        List<TicketSearchDto> tickets = ticketRepository.findAll().stream().filter(ticket -> {
+
+            if (!ticket.getStatus().isActive()) return false;
+
+            List<Long> ticketCategoryIds = new ArrayList<>(ticket.getCategories().stream().map(Category::getId).toList());
+            if (!searchParams.getCategoryIds().isEmpty()) {
+                ticketCategoryIds.retainAll(searchParams.getCategoryIds());
+                if (ticketCategoryIds.isEmpty()) return false;
+            }
+
+            if (searchParams.getOfferTypes().size() == 1) {
+                if (ticket.getStatus() != searchParams.getOfferTypes().get(0)) return false;
+            }
+
+            if (ticket.getStatus().equals(TicketStatus.SELL)) {
+                if (ticket.getPrice() < searchParams.getPriceMin()) return false;
+                if (ticket.getPrice() > searchParams.getPriceMax()) return false;
+            }
+            String ticketCountry = ticket.getEvent().getVenue().getLocation().getCountry();
+            if (!searchParams.getCountries().isEmpty() && !searchParams.getCountries().contains(ticketCountry)) return false;
+            System.out.println("passed country");
+            String ticketCity = ticket.getEvent().getVenue().getLocation().getCity();
+            if (!searchParams.getCities().isEmpty() && !searchParams.getCities().contains(ticketCity)) return false;
+            System.out.println("passed city");
+
+            LocalDateTime eventDate = ticket.getEvent().getEventDate();
+            if (eventDate.isBefore(searchParams.getStartDate())) return false;
+            if (eventDate.isAfter(searchParams.getEndDate())) return false;
+
+            return true;
+        }).map(TicketSearchDto::map).toList();
         return tickets;
     }
 
