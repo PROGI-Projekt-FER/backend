@@ -45,8 +45,8 @@ public class TicketInsertDto {
         ticket.setStatus(status);
         ticket.setDescription(description);
         ticket.setPrice(price);
-        ticket.setCategories(categoryIds.stream().map(id -> new Category(id, null, null)).toList());
-        ticket.setInterestedInCategories(interestedInCategoryIds.stream().map(id -> new Category(id, null, null)).toList());
+        ticket.setCategories(categoryIds.stream().map(id -> new Category(id, null, null, null)).toList());
+        ticket.setInterestedInCategories(interestedInCategoryIds.stream().map(id -> new Category(id, null, null, null)).toList());
         return ticket;
     }
 }

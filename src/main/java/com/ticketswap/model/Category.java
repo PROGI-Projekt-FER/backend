@@ -20,6 +20,9 @@ public class Category extends BaseModel {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "color_hex_code")
+    private String colorHexCode;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent_category")
     private Category parentCategory;
