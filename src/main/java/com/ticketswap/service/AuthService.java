@@ -17,11 +17,10 @@ public class AuthService {
     private UserRepository userRepository;
 
     public Optional<User> getLoggedInUser() {
-//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        if (principal instanceof CustomOAuth2User customUser) {
-//            return Optional.of(customUser.getUser());
-//        }
-//        return Optional.empty();
-        return Optional.of(userRepository.findAll().get(0));
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof CustomOAuth2User customUser) {
+            return Optional.of(customUser.getUser());
+        }
+        return Optional.empty();
     }
 }

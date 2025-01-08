@@ -61,8 +61,8 @@ public class TicketService {
         Ticket ticket = ticketInsertDto.toEntity();
         Optional<Ticket> existingTicket = ticketRepository.findById(ticket.getId());
         User loggedInUser = authService.getLoggedInUser().get();
-//        if (existingTicket.isEmpty() || !existingTicket.get().getUser().getId().equals(loggedInUser.getId()))
-//            throw new ResourceNotFoundException(String.format("Ticket with id = %s does not exist or is not yours", ticket.getId().toString()));
+        if (existingTicket.isEmpty() || !existingTicket.get().getUser().getId().equals(loggedInUser.getId()))
+            throw new ResourceNotFoundException(String.format("Ticket with id = %s does not exist or is not yours", ticket.getId().toString()));
         ticket.setEvent(eventService.getUpdatedEvent(ticketInsertDto.getEvent()));
         ticket.setCategories(categoryRepository.findAllById(ticket.getCategories().stream().map(Category::getId).toList()));
         ticket.setInterestedInCategories(categoryRepository.findAllById(ticket.getInterestedInCategories().stream().map(Category::getId).toList()));
@@ -94,5 +94,15 @@ public class TicketService {
     public List<TicketSearchDto> searchTickets() {
         List<TicketSearchDto> tickets = ticketRepository.findAll().stream().map(TicketSearchDto::map).toList();
         return tickets;
+    }
+
+    public TicketDetailsDto toggleTicketStatus(UpdateTicketStatusDto updateTicketStatusDto) {
+        Optional<Ticket> existingTicket = ticketRepository.findById(updateTicketStatusDto.getTicketId());
+        User loggedInUser = authService.getLoggedInUser().get();
+        if (existingTicket.isEmpty() || !existingTicket.get().getUser().getId().equals(loggedInUser.getId()))
+            throw new ResourceNotFoundException(String.format("Ticket with id = %s does not exist or is not yours", updateTicketStatusDto.getTicketId()));
+        Ticket updatedTicket = existingTicket.get();
+        updatedTicket.setStatus(updateTicketStatusDto.getTicketStatus());
+        return TicketDetailsDto.map(ticketRepository.save(updatedTicket));
     }
 }
