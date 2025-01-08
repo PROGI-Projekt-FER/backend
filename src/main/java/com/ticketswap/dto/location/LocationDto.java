@@ -11,12 +11,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LocationDto {
+    private Long id;
     private String country;
     private String city;
     private String address;
 
     public static LocationDto map(Location location) {
         LocationDto dto = new LocationDto();
+        dto.setId(location.getId());
         dto.setCountry(location.getCountry());
         dto.setCity(location.getCity());
         dto.setAddress(location.getAddress());
@@ -25,6 +27,7 @@ public class LocationDto {
 
     public Location toEntity() {
         Location location = new Location();
+        location.setId(id);
         location.setCountry(country);
         location.setCity(city);
         location.setAddress(address);

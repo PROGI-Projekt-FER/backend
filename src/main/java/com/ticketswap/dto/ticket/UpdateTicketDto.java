@@ -17,11 +17,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TicketDetailsDto {
-
+public class UpdateTicketDto {
     private Long id;
-    private UsernameDto postedByUser;
-    private EventDto event;
     private TicketStatus status;
     private String description;
     private double price;
@@ -30,11 +27,9 @@ public class TicketDetailsDto {
     private List<CategoryDto> categories;
     private List<CategoryDto> interestedInCategories;
 
-    public static TicketDetailsDto map(Ticket ticket) {
-        TicketDetailsDto dto = new TicketDetailsDto();
+    public static UpdateTicketDto map(Ticket ticket) {
+        UpdateTicketDto dto = new UpdateTicketDto();
         dto.setId(ticket.getId());
-        dto.setPostedByUser(UsernameDto.map(ticket.getUser()));
-        dto.setEvent(EventDto.map(ticket.getEvent()));
         dto.setStatus(ticket.getStatus());
         dto.setDescription(ticket.getDescription());
         dto.setPrice(ticket.getPrice());
@@ -48,8 +43,6 @@ public class TicketDetailsDto {
     public Ticket toEntity() {
         Ticket ticket = new Ticket();
         ticket.setId(id);
-        ticket.setUser(postedByUser.toEntity());
-        ticket.setEvent(event.toEntity());
         ticket.setStatus(status);
         ticket.setDescription(description);
         ticket.setPrice(price);
@@ -57,5 +50,4 @@ public class TicketDetailsDto {
         ticket.setInterestedInCategories(interestedInCategories.stream().map(CategoryDto::toEntity).toList());
         return ticket;
     }
-
 }

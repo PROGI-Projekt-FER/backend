@@ -14,10 +14,6 @@ import lombok.Setter;
 public class MainByCityDto {
     private double temp;
 
-    private int pressure;
-
-    private int humidity;
-
     @JsonProperty("temp_min")
     private double tempMin;
 

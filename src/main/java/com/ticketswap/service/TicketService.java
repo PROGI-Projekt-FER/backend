@@ -1,12 +1,10 @@
 package com.ticketswap.service;
 
-import com.ticketswap.dto.ticket.TicketDetailsDto;
-import com.ticketswap.dto.ticket.TicketInsertDto;
-import com.ticketswap.dto.ticket.TicketSearchDto;
+import com.ticketswap.dto.ticket.*;
 import com.ticketswap.dto.user.UsernameDto;
-import com.ticketswap.model.Category;
-import com.ticketswap.model.Ticket;
-import com.ticketswap.model.User;
+import com.ticketswap.dto.weather.CityDailyForecastDto;
+import com.ticketswap.dto.weather.DailyWeatherInCityDto;
+import com.ticketswap.model.*;
 import com.ticketswap.repository.CategoryRepository;
 import com.ticketswap.repository.TicketRepository;
 import com.ticketswap.repository.UserRepository;
@@ -30,6 +28,12 @@ public class TicketService {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private WeatherService weatherService;
+
+    @Autowired
+    private EventService eventService;
+
     public TicketDetailsDto getTicketById(Long ticketId) {
         Optional<Ticket> ticket = ticketRepository.findById(ticketId);
         if (ticket.isPresent()) {
@@ -38,12 +42,28 @@ public class TicketService {
         throw new ResourceNotFoundException("Ticket with id " + ticketId + " not found.");
     }
 
+    public TicketWeatherResponseDto getWeatherForTicket(Long ticketId) {
+        Optional<Ticket> ticket = ticketRepository.findById(ticketId);
+        if (ticket.isEmpty()) {
+            throw new ResourceNotFoundException("Ticket with id " + ticketId + " not found.");
+        }
+        Location location = ticket.get().getEvent().getVenue().getLocation();
+        String city = location.getCity();
+        String country = location.getCountry();
+        DailyWeatherInCityDto forecast = weatherService.getWeatherData(city, country, ticket.get().getEvent().getEventDate());
+        if (forecast != null) {
+            return TicketWeatherResponseDto.map(forecast);
+        }
+        throw new ResourceNotFoundException("Could not fetch weather forecast for ticket with id = " + ticketId);
+    }
+
     public TicketDetailsDto updateTicket(TicketInsertDto ticketInsertDto) {
         Ticket ticket = ticketInsertDto.toEntity();
         Optional<Ticket> existingTicket = ticketRepository.findById(ticket.getId());
         User loggedInUser = authService.getLoggedInUser().get();
-        if (existingTicket.isEmpty() || !existingTicket.get().getUser().getId().equals(loggedInUser.getId()))
-            throw new ResourceNotFoundException(String.format("Ticket with id = %s does not exist or is not yours", ticket.getId().toString()));
+//        if (existingTicket.isEmpty() || !existingTicket.get().getUser().getId().equals(loggedInUser.getId()))
+//            throw new ResourceNotFoundException(String.format("Ticket with id = %s does not exist or is not yours", ticket.getId().toString()));
+        ticket.setEvent(eventService.getUpdatedEvent(ticketInsertDto.getEvent()));
         ticket.setCategories(categoryRepository.findAllById(ticket.getCategories().stream().map(Category::getId).toList()));
         ticket.setInterestedInCategories(categoryRepository.findAllById(ticket.getInterestedInCategories().stream().map(Category::getId).toList()));
         ticket.setUser(loggedInUser);

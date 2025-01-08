@@ -3,6 +3,7 @@ package com.ticketswap.controller;
 import com.ticketswap.dto.ticket.TicketDetailsDto;
 import com.ticketswap.dto.ticket.TicketInsertDto;
 import com.ticketswap.dto.ticket.TicketSearchDto;
+import com.ticketswap.dto.ticket.TicketWeatherResponseDto;
 import com.ticketswap.model.CustomOAuth2User;
 import com.ticketswap.model.User;
 import com.ticketswap.service.AuthService;
@@ -41,10 +42,15 @@ public class TicketController {
         return ResponseEntity.ok(ticketService.getTicketById(ticketId));
     }
 
+    @GetMapping("/{ticketId}/weather")
+    public ResponseEntity<TicketWeatherResponseDto> getWeatherForTicket(@PathVariable("ticketId") Long ticketId) {
+        return ResponseEntity.ok(ticketService.getWeatherForTicket(ticketId));
+    }
+
     @PutMapping("/{ticketId}")
     public ResponseEntity<TicketDetailsDto> updateTicket(@RequestBody TicketInsertDto ticketInsertDto, @PathVariable("ticketId") Long ticketId) {
-        Optional<User> loggedInUser = authService.getLoggedInUser();
-        if (loggedInUser.isEmpty()) throw new NotLoggedInException();
+//        Optional<User> loggedInUser = authService.getLoggedInUser();
+//        if (loggedInUser.isEmpty()) throw new NotLoggedInException();
         ticketInsertDto.setId(ticketId);
         return ResponseEntity.ok(ticketService.updateTicket(ticketInsertDto));
     }
