@@ -30,11 +30,12 @@ public class UserController {
         return ResponseEntity.ok(profile);
     }
 
-    @PostMapping("/info")
-    public ResponseEntity<String> editProfile(@RequestBody @Valid UserEditDto userEditDto) {
+    @PutMapping("/info")
+    public ResponseEntity<UserDto> editProfile(@RequestBody @Valid UserEditDto userEditDto) {
         User loggedInUser = authService.getLoggedInUser()
                 .orElseThrow(NotLoggedInException::new);
         userService.editProfile(loggedInUser, userEditDto);
-        return ResponseEntity.ok("Profile updated successfully.");
+        UserDto updatedProfile = userService.getProfile(loggedInUser);
+        return ResponseEntity.ok(updatedProfile);
     }
 }

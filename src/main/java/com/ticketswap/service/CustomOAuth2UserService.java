@@ -22,8 +22,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) {
         OAuth2User oAuth2User = super.loadUser(userRequest);
-
         String externalId = oAuth2User.getAttribute("sub"); // Google's unique ID
+        String firstName = oAuth2User.getAttribute("given_name");
+        String lastName = oAuth2User.getAttribute("family_name");
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
         String pictureUrl = oAuth2User.getAttribute("picture");
@@ -31,6 +32,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         User user = userRepository.findByExternalId(externalId).orElseGet(() -> {
             User newUser = new User();
             newUser.setExternalId(externalId);
+            newUser.setFirstName(firstName);
+            newUser.setLastName(lastName);
             newUser.setEmail(email);
             newUser.setUsername(name);
             newUser.setProfilePicUrl(pictureUrl);

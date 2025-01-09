@@ -28,8 +28,8 @@ public class UserService {
         user.setLastName(userEditDto.getLastName());
         user.setUsername(userEditDto.getUsername());
 
-        if (userEditDto.getPreferredCategory() != null) {
-            Long categoryId = userEditDto.getPreferredCategory().getId();
+        if (userEditDto.getPreferredCategoryId() != null) {
+            Long categoryId = userEditDto.getPreferredCategoryId();
             Category category = categoryRepository.findById(categoryId)
                     .orElseThrow(() -> new ResourceNotFoundException("Category with ID " + categoryId + " not found."));
             user.setPreferredCategory(category);
