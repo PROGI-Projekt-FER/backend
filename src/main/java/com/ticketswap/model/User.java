@@ -35,4 +35,7 @@ public class User extends BaseModel{
     @Column(name = "external_id")
     private String externalId;
 
+    @ManyToOne
+    @JoinColumn(name = "preferred_category_id")
+    private Category preferredCategory;
 }
