@@ -2,6 +2,7 @@ package com.ticketswap.service;
 
 import com.ticketswap.dto.transaction.TransactionDto;
 import com.ticketswap.model.Ticket;
+import com.ticketswap.model.TicketStatus;
 import com.ticketswap.model.Transaction;
 import com.ticketswap.model.User;
 import com.ticketswap.repository.TicketRepository;
@@ -22,7 +23,7 @@ public class TransactionService {
     private TransactionRepository transactionRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private AuthService authService;
 
     @Autowired
     private TicketRepository ticketRepository;
@@ -33,14 +34,17 @@ public class TransactionService {
                 .collect(Collectors.toList());
     }
 
-    public TransactionDto saveTransaction(TransactionDto transactionDto) {
-        User buyer = userRepository.findById(transactionDto.getBuyerId())
-                .orElseThrow(() -> new ResourceNotFoundException("Buyer not found"));
-        Ticket ticket = ticketRepository.findById(transactionDto.getTicketId())
+    public TransactionDto buyTicket(Long ticketId, User buyer) throws Exception {
+        Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
-
-        Transaction transaction = transactionDto.toEntity(transactionDto, buyer, ticket);
+        if (!ticket.getStatus().equals(TicketStatus.SELL)) throw new Exception("This ticket cannot be sold.");
+        if (buyer.getId().equals(ticket.getUser().getId())) throw new Exception("You cannot buy your own ticket.");
+        Transaction transaction = new Transaction();
+        transaction.setBuyer(buyer);
+        transaction.setTicket(ticket);
         Transaction savedTransaction = transactionRepository.save(transaction);
+        ticket.setStatus(TicketStatus.EXCHANGED);
+        ticketRepository.save(ticket);
         return TransactionDto.map(savedTransaction);
     }
 
