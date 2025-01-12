@@ -97,10 +97,4 @@ public class TicketController {
         return ResponseEntity.ok(updatedTicket);
     }
 
-    @GetMapping("/trade-history")
-    public ResponseEntity<List<TicketHistoryDto>> getTradeHistory() {
-        User loggedInUser = authService.getLoggedInUser()
-                .orElseThrow(NotLoggedInException::new);
-        return ResponseEntity.ok(ticketService.getTradeHistory(loggedInUser));
-    }
 }

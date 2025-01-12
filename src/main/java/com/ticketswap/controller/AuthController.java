@@ -16,20 +16,6 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
-    @GetMapping("/user")
-    public Optional<User> getLoggedInUser() {
-        return authService.getLoggedInUser();
-    }
-
-    @GetMapping("/user/info")
-    public ResponseEntity<User> getUserInfo() {
-        Optional<User> loggedInUser = authService.getLoggedInUser();
-        if (loggedInUser.isEmpty()) throw new NotLoggedInException();
-        return ResponseEntity.ok(loggedInUser.get());
-    }
-
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request) {
         request.getSession().invalidate();

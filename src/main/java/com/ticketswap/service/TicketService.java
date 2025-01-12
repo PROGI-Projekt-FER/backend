@@ -139,9 +139,4 @@ public class TicketService {
         updatedTicket.setStatus(updateTicketStatusDto.getTicketStatus());
         return TicketDetailsDto.map(ticketRepository.save(updatedTicket));
     }
-
-    public List<TicketHistoryDto> getTradeHistory(User loggedInUser) {
-        List<TicketTradeHistory> tradeHistory = ticketTradeHistoryRepository.findTicketTradeHistoriesByPreviousOwnerIdOrNewOwnerIdOrderByCreatedAtDesc(loggedInUser.getId(), loggedInUser.getId());
-        return tradeHistory.stream().map(TicketHistoryDto::map).toList();
-    }
 }

@@ -12,4 +12,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     @Query("SELECT t FROM ticket t WHERE t.status = :ticketStatus AND t.updatedAt <= :threshold")
     List<Ticket> getAllTicketsToBeAutomaticallyDeleted(TicketStatus ticketStatus, LocalDateTime threshold);
+
+    List<Ticket> findAllByUserId(Long userId);
 }

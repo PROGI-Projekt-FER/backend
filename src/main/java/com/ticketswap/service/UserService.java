@@ -1,14 +1,17 @@
 package com.ticketswap.service;
 
+import com.ticketswap.dto.swap.RequestDetailsDto;
+import com.ticketswap.dto.ticket.TicketDetailsDto;
+import com.ticketswap.dto.ticket.TicketHistoryDto;
 import com.ticketswap.dto.user.UserDto;
 import com.ticketswap.dto.user.UserEditDto;
-import com.ticketswap.model.Category;
-import com.ticketswap.model.User;
-import com.ticketswap.repository.CategoryRepository;
-import com.ticketswap.repository.UserRepository;
+import com.ticketswap.model.*;
+import com.ticketswap.repository.*;
 import com.ticketswap.util.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -18,6 +21,15 @@ public class UserService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private TicketRepository ticketRepository;
+
+    @Autowired
+    private TicketTradeHistoryRepository ticketTradeHistoryRepository;
+
+    @Autowired
+    private SwapRequestRepository swapRequestRepository;
 
     public UserDto getProfile(User user) {
         return UserDto.map(user);
@@ -36,5 +48,24 @@ public class UserService {
         }
 
         userRepository.save(user);
+    }
+
+    public List<TicketHistoryDto> getTradeHistory(User loggedInUser) {
+        List<TicketTradeHistory> tradeHistory = ticketTradeHistoryRepository.findTicketTradeHistoriesByPreviousOwnerIdOrNewOwnerIdOrderByCreatedAtDesc(loggedInUser.getId(), loggedInUser.getId());
+
+        return tradeHistory.stream().map(TicketHistoryDto::map).toList();
+    }
+
+    public List<TicketDetailsDto> getMyTickets(User loggedInUser) {
+        List<Ticket> myTickets = ticketRepository.findAllByUserId(loggedInUser.getId());
+        return myTickets.stream().map(TicketDetailsDto::map).toList();
+    }
+
+    public List<RequestDetailsDto> getPendingRequests(User loggedInUser) {
+        List<SwapRequest> pendingRequests = swapRequestRepository.findAllByReceivingTicketUserId(loggedInUser.getId());
+        return pendingRequests.stream()
+                .filter(request -> request.getConfirmationStatus().equals(ConfirmationStatus.PENDING))
+                .map(request -> RequestDetailsDto.map(request, null))
+                .toList();
     }
 }
