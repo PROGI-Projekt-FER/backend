@@ -25,6 +25,14 @@ public class TicketTradeHistory extends BaseModel {
     private Ticket ticket;
 
     @ManyToOne
+    @JoinColumn(name = "swapped_for_ticket_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Ticket swappedForTicket;
+
+    @Column(name = "sold_for_price")
+    private double soldForPrice = 0.0;
+
+    @ManyToOne
     @JoinColumn(name = "previous_owner_id")
     private User previousOwner;
 

@@ -7,6 +7,7 @@ import com.ticketswap.dto.weather.DailyWeatherInCityDto;
 import com.ticketswap.model.*;
 import com.ticketswap.repository.CategoryRepository;
 import com.ticketswap.repository.TicketRepository;
+import com.ticketswap.repository.TicketTradeHistoryRepository;
 import com.ticketswap.repository.UserRepository;
 import com.ticketswap.util.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class TicketService {
 
     @Autowired
     private EventService eventService;
+
+    @Autowired
+    private TicketTradeHistoryRepository ticketTradeHistoryRepository;
 
     public TicketDetailsDto getTicketById(Long ticketId) {
         Optional<Ticket> ticket = ticketRepository.findById(ticketId);
@@ -134,5 +138,10 @@ public class TicketService {
         Ticket updatedTicket = existingTicket.get();
         updatedTicket.setStatus(updateTicketStatusDto.getTicketStatus());
         return TicketDetailsDto.map(ticketRepository.save(updatedTicket));
+    }
+
+    public List<TicketHistoryDto> getTradeHistory(User loggedInUser) {
+        List<TicketTradeHistory> tradeHistory = ticketTradeHistoryRepository.findTicketTradeHistoriesByPreviousOwnerIdOrNewOwnerIdOrderByCreatedAtDesc(loggedInUser.getId(), loggedInUser.getId());
+        return tradeHistory.stream().map(TicketHistoryDto::map).toList();
     }
 }

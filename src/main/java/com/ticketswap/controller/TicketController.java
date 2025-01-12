@@ -66,34 +66,41 @@ public class TicketController {
 
     @PutMapping("/{ticketId}")
     public ResponseEntity<TicketDetailsDto> updateTicket(@RequestBody TicketInsertDto ticketInsertDto, @PathVariable("ticketId") Long ticketId) {
-        Optional<User> loggedInUser = authService.getLoggedInUser();
-        if (loggedInUser.isEmpty()) throw new NotLoggedInException();
+        User loggedInUser = authService.getLoggedInUser()
+                .orElseThrow(NotLoggedInException::new);
         ticketInsertDto.setId(ticketId);
         return ResponseEntity.ok(ticketService.updateTicket(ticketInsertDto));
     }
 
     @DeleteMapping("/{ticketId}")
     public ResponseEntity<String> deleteTicket(@PathVariable("ticketId") Long ticketId) {
-        Optional<User> loggedInUser = authService.getLoggedInUser();
-        if (loggedInUser.isEmpty()) throw new NotLoggedInException();
+        User loggedInUser = authService.getLoggedInUser()
+                .orElseThrow(NotLoggedInException::new);
         ticketService.deleteTicket(ticketId);
         return ResponseEntity.ok("Successfully deleted ticket with id = " + ticketId);
     }
 
     @PostMapping
     public ResponseEntity<TicketDetailsDto> createTicket(@RequestBody TicketInsertDto ticketInsertDto) {
-        Optional<User> loggedInUser = authService.getLoggedInUser();
-        if (loggedInUser.isEmpty()) throw new NotLoggedInException();
+        User loggedInUser = authService.getLoggedInUser()
+                .orElseThrow(NotLoggedInException::new);
         TicketDetailsDto createdTicket = ticketService.createTicket(ticketInsertDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTicket);
     }
 
-    @PatchMapping("/{ticketId}/changeStatus")
+    @PatchMapping("/{ticketId}/change-status")
     public ResponseEntity<TicketDetailsDto> toggleTicketStatus(@RequestBody UpdateTicketStatusDto updateTicketStatusDto, @PathVariable("ticketId") Long ticketId) {
-        Optional<User> loggedInUser = authService.getLoggedInUser();
-        if (loggedInUser.isEmpty()) throw new NotLoggedInException();
+        User loggedInUser = authService.getLoggedInUser()
+                .orElseThrow(NotLoggedInException::new);
         updateTicketStatusDto.setTicketId(ticketId);
         TicketDetailsDto updatedTicket = ticketService.toggleTicketStatus(updateTicketStatusDto);
         return ResponseEntity.ok(updatedTicket);
+    }
+
+    @GetMapping("/trade-history")
+    public ResponseEntity<List<TicketHistoryDto>> getTradeHistory() {
+        User loggedInUser = authService.getLoggedInUser()
+                .orElseThrow(NotLoggedInException::new);
+        return ResponseEntity.ok(ticketService.getTradeHistory(loggedInUser));
     }
 }

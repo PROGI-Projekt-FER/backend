@@ -27,6 +27,9 @@ public class SwapService {
     @Autowired
     private NotificationRepository notificationRepository;
 
+    @Autowired
+    private TicketTradeHistoryRepository ticketTradeHistoryRepository;
+
     @Transactional
     public SwapRequest requestTicketSwap(User loggedInUser, Long requestingTicketId, Long receivingTicketId) throws Exception {
         Ticket requestingTicket = ticketRepository.findById(requestingTicketId).orElseThrow(() -> new ResourceNotFoundException("Requesting ticket not found"));
@@ -73,14 +76,27 @@ public class SwapService {
         notification.setUser(swapRequest.getSendingTicket().getUser());
         if (responseStatus == ConfirmationStatus.APPROVED) notification.setMessage("One of your swap requests has been accepted!");
         else notification.setMessage("One of your swap requests has been declined!");
-
         notificationRepository.save(notification);
 
-        Ticket receivingTicket = swapRequest.getReceivingTicket();
-        receivingTicket.setStatus(TicketStatus.EXCHANGED);
-        Ticket requestingTicket = swapRequest.getSendingTicket();
-        requestingTicket.setStatus(TicketStatus.EXCHANGED);
-        ticketRepository.saveAll(List.of(receivingTicket, requestingTicket));
+        if (isAccepting) {
+            Ticket receivingTicket = swapRequest.getReceivingTicket();
+            receivingTicket.setStatus(TicketStatus.EXCHANGED);
+            Ticket requestingTicket = swapRequest.getSendingTicket();
+            requestingTicket.setStatus(TicketStatus.EXCHANGED);
+            User previousOwner = swapRequest.getReceivingTicket().getUser();
+            User newOwner = swapRequest.getSendingTicket().getUser();
+            receivingTicket.setUser(newOwner);
+            requestingTicket.setUser(previousOwner);
+            ticketRepository.saveAll(List.of(receivingTicket, requestingTicket));
+
+            TicketTradeHistory ticketTradeHistory = new TicketTradeHistory();
+            ticketTradeHistory.setTicket(receivingTicket);
+            ticketTradeHistory.setSwappedForTicket(requestingTicket);
+            ticketTradeHistory.setTradeType(TradeType.SWAP);
+            ticketTradeHistory.setPreviousOwner(previousOwner);
+            ticketTradeHistory.setNewOwner(newOwner);
+            ticketTradeHistoryRepository.save(ticketTradeHistory);
+        }
 
         return swapConfirmationRepository.save(swapConfirmation);
     }

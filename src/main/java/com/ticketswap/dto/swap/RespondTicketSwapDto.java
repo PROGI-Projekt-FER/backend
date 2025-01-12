@@ -10,5 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RespondTicketSwapDto {
-    private boolean isAccepting;
+    private boolean accepting;
 }
