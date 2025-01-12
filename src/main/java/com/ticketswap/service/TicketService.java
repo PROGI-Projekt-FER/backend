@@ -114,10 +114,8 @@ public class TicketService {
             }
             String ticketCountry = ticket.getEvent().getVenue().getLocation().getCountry();
             if (!searchParams.getCountries().isEmpty() && !searchParams.getCountries().contains(ticketCountry)) return false;
-            System.out.println("passed country");
             String ticketCity = ticket.getEvent().getVenue().getLocation().getCity();
             if (!searchParams.getCities().isEmpty() && !searchParams.getCities().contains(ticketCity)) return false;
-            System.out.println("passed city");
 
             LocalDateTime eventDate = ticket.getEvent().getEventDate();
             if (eventDate.isBefore(searchParams.getStartDate())) return false;
