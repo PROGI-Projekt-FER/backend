@@ -35,6 +35,11 @@ public class UserService {
         return UserDto.map(user);
     }
 
+    public List<UserDto> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream().map(UserDto::map).toList();
+    }
+
     public void editProfile(User user, UserEditDto userEditDto) {
         user.setFirstName(userEditDto.getFirstName());
         user.setLastName(userEditDto.getLastName());
@@ -67,5 +72,12 @@ public class UserService {
                 .filter(request -> request.getConfirmationStatus().equals(ConfirmationStatus.PENDING))
                 .map(request -> RequestDetailsDto.map(request, null))
                 .toList();
+    }
+
+    public void deleteUser(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User with ID " + userId + " not found.");
+        }
+        userRepository.deleteById(userId);
     }
 }

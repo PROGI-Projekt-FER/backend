@@ -8,6 +8,7 @@ import com.ticketswap.dto.user.UserEditDto;
 import com.ticketswap.model.TicketStatus;
 import com.ticketswap.model.User;
 import com.ticketswap.service.AuthService;
+import com.ticketswap.service.SpotifyService;
 import com.ticketswap.service.TicketService;
 import com.ticketswap.service.UserService;
 import com.ticketswap.util.NotLoggedInException;
@@ -29,6 +30,19 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private SpotifyService spotifyService;
+
+    @Autowired
+    public UserController(SpotifyService spotifyService) {
+        this.spotifyService = spotifyService;
+    }
+
+    @GetMapping("/autocomplete/artist")
+    public List<String> autocompleteArtists(@RequestParam String query) {
+        return spotifyService.searchArtists(query);
+    }
+
     @GetMapping("/info")
     public ResponseEntity<UserDto> getProfile() {
         User loggedInUser = authService.getLoggedInUser()
@@ -37,10 +51,20 @@ public class UserController {
         return ResponseEntity.ok(profile);
     }
 
+    @GetMapping
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        User loggedInUser = authService.getLoggedInUser()
+                .orElseThrow(NotLoggedInException::new);
+
+        List<UserDto> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
     @PutMapping("/info")
     public ResponseEntity<UserDto> editProfile(@RequestBody @Valid UserEditDto userEditDto) {
         User loggedInUser = authService.getLoggedInUser()
                 .orElseThrow(NotLoggedInException::new);
+
         userService.editProfile(loggedInUser, userEditDto);
         UserDto updatedProfile = userService.getProfile(loggedInUser);
         return ResponseEntity.ok(updatedProfile);
@@ -65,5 +89,14 @@ public class UserController {
         User loggedInUser = authService.getLoggedInUser()
                 .orElseThrow(NotLoggedInException::new);
         return ResponseEntity.ok(userService.getPendingRequests(loggedInUser));
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+        User loggedInUser = authService.getLoggedInUser()
+                .orElseThrow(NotLoggedInException::new);
+
+        userService.deleteUser(userId);
+        return ResponseEntity.noContent().build();
     }
 }
