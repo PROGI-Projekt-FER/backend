@@ -11,6 +11,7 @@ import com.ticketswap.repository.TicketRepository;
 import com.ticketswap.repository.TicketTradeHistoryRepository;
 import com.ticketswap.repository.UserRepository;
 import com.ticketswap.util.ResourceNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -90,11 +91,13 @@ public class TicketService {
         return TicketDetailsDto.map(ticket);
     }
 
+    @Transactional
     public void deleteTicket(Long ticketId) {
         Optional<Ticket> existingTicket = ticketRepository.findById(ticketId);
         User loggedInUser = authService.getLoggedInUser().get();
         if (existingTicket.isEmpty() || !existingTicket.get().getUser().getId().equals(loggedInUser.getId()))
             throw new ResourceNotFoundException(String.format("Ticket with id = %s does not exist or is not yours", ticketId));
+
         ticketRepository.delete(existingTicket.get());
     }
 

@@ -65,6 +65,14 @@ public class UserController {
         return ResponseEntity.ok(userService.getTradeHistory(loggedInUser));
     }
 
+    @GetMapping("/{userId}/trade-history")
+    public ResponseEntity<List<TicketHistoryDto>> getTradeHistoryForUser(@PathVariable Long userId) {
+        User loggedInUser = authService.getLoggedInUser()
+                .orElseThrow(NotLoggedInException::new);
+
+        return ResponseEntity.ok(userService.getTradeHistoryForUser(userId));
+    }
+
     @GetMapping("/tickets")
     public ResponseEntity<List<TicketDetailsDto>> getMyTickets() {
         User loggedInUser = authService.getLoggedInUser()

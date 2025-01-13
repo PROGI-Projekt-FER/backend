@@ -33,7 +33,9 @@ public class TicketHistoryDto {
     public static TicketHistoryDto map(TicketTradeHistory ticketTradeHistory) {
         TicketHistoryDto ticketHistoryDto = new TicketHistoryDto();
         ticketHistoryDto.setTicket(TicketBasicInfoDto.map(ticketTradeHistory.getTicket()));
-        ticketHistoryDto.setSwappedForTicket(TicketBasicInfoDto.map(ticketTradeHistory.getSwappedForTicket()));
+        if (ticketTradeHistory.getSwappedForTicket() != null) {
+            ticketHistoryDto.setSwappedForTicket(TicketBasicInfoDto.map(ticketTradeHistory.getSwappedForTicket()));
+        }
         ticketHistoryDto.setSoldForPrice(ticketTradeHistory.getSoldForPrice());
         ticketHistoryDto.setTradedAt(ticketTradeHistory.getCreatedAt());
         ticketHistoryDto.setNewOwner(UserDto.map(ticketTradeHistory.getNewOwner()));

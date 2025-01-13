@@ -52,6 +52,31 @@ public class SwapService {
     }
 
     @Transactional
+    public void buyTicket(User loggedInUser, Long ticketId) throws Exception {
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new ResourceNotFoundException("Ticket not found"));
+        if (ticket.getUser().getId().equals(loggedInUser.getId())) throw new Exception("Cannot buy your own ticket");
+        if (!ticket.getStatus().equals(TicketStatus.SELL)) throw new Exception("Ticket is not of type SELL");
+
+        Notification notification = new Notification();
+        notification.setUser(ticket.getUser());
+        notification.setMessage("Your ticket has been sold!");
+        notification.setSeenByUser(false);
+        notificationRepository.save(notification);
+
+        TicketTradeHistory ticketTradeHistory = new TicketTradeHistory();
+        ticketTradeHistory.setTicket(ticket);
+        ticketTradeHistory.setSoldForPrice(ticket.getPrice());
+        ticketTradeHistory.setTradeType(TradeType.SELL);
+        ticketTradeHistory.setPreviousOwner(ticket.getUser());
+        ticketTradeHistory.setNewOwner(loggedInUser);
+        ticketTradeHistoryRepository.save(ticketTradeHistory);
+
+        ticket.setUser(loggedInUser);
+        ticket.setStatus(TicketStatus.EXCHANGED);
+        ticketRepository.save(ticket);
+    }
+
+    @Transactional
     public SwapConfirmation respondToTicketSwap(User loggedInUser, Long swapRequestId, boolean isAccepting) throws Exception {
         SwapRequest swapRequest = swapRequestRepository.findById(swapRequestId).orElseThrow(() -> new ResourceNotFoundException("Swap request not found"));
         if (!swapRequest.getReceivingTicket().getUser().getId().equals(loggedInUser.getId())) throw new Exception("Cannot respond to a swap request not directed to one of your tickets");
@@ -74,6 +99,7 @@ public class SwapService {
 
         Notification notification = new Notification();
         notification.setUser(swapRequest.getSendingTicket().getUser());
+        notification.setSeenByUser(false);
         if (responseStatus == ConfirmationStatus.APPROVED) notification.setMessage("One of your swap requests has been accepted!");
         else notification.setMessage("One of your swap requests has been declined!");
         notificationRepository.save(notification);

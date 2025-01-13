@@ -24,11 +24,4 @@ public class TransactionController {
     public ResponseEntity<List<TransactionDto>> getTransactions() {
         return ResponseEntity.ok(transactionService.getAllTransactions());
     }
-
-    @PostMapping("/tickets/{ticketId}/buy")
-    public ResponseEntity<TransactionDto> buyTicket(@PathVariable("ticketId") Long ticketId) throws Exception {
-        User loggedInUser = authService.getLoggedInUser()
-                .orElseThrow(NotLoggedInException::new);
-        return ResponseEntity.ok(transactionService.buyTicket(ticketId, loggedInUser));
-    }
 }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -60,6 +61,11 @@ public class UserService {
         List<TicketTradeHistory> tradeHistory = ticketTradeHistoryRepository.findTicketTradeHistoriesByPreviousOwnerIdOrNewOwnerIdOrderByCreatedAtDesc(loggedInUser.getId(), loggedInUser.getId());
 
         return tradeHistory.stream().map(TicketHistoryDto::map).toList();
+    }
+
+    public List<TicketHistoryDto> getTradeHistoryForUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User with userId = " + userId + " not found"));
+        return getTradeHistory(user);
     }
 
     public List<TicketDetailsDto> getMyTickets(User loggedInUser) {

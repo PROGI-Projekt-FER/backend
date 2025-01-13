@@ -31,6 +31,16 @@ public class SwapController {
         return ResponseEntity.ok("Request sent successfully");
     }
 
+    @PostMapping("/tickets/{ticketId}/buy")
+    public ResponseEntity<String> buyTicket(@PathVariable Long ticketId) throws Exception {
+        User loggedInUser = authService.getLoggedInUser()
+                .orElseThrow(NotLoggedInException::new);
+
+        swapService.buyTicket(loggedInUser, ticketId);
+
+        return ResponseEntity.ok("Ticket purchased successfully");
+    }
+
     @GetMapping("/request/{requestId}")
     public ResponseEntity<RequestDetailsDto> getRequestDetails(@PathVariable Long requestId) throws Exception {
         User loggedInUser = authService.getLoggedInUser()
