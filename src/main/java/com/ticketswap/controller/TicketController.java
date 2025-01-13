@@ -1,10 +1,12 @@
 package com.ticketswap.controller;
 
+import com.ticketswap.dto.spotify.ArtistDetailsDto;
 import com.ticketswap.dto.ticket.*;
 import com.ticketswap.model.CustomOAuth2User;
 import com.ticketswap.model.TicketStatus;
 import com.ticketswap.model.User;
 import com.ticketswap.service.AuthService;
+import com.ticketswap.service.SpotifyService;
 import com.ticketswap.service.TicketService;
 import com.ticketswap.util.NotLoggedInException;
 import com.ticketswap.util.ResourceNotFoundException;
@@ -30,6 +32,9 @@ public class TicketController {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private SpotifyService spotifyService;
+
     @GetMapping
     public ResponseEntity<List<TicketSearchDto>> searchTickets(
             @RequestParam(name = "categories", defaultValue = "") List<Long> categoryIds,
@@ -52,6 +57,16 @@ public class TicketController {
         searchParams.setEndDate(endDate);
 
         return ResponseEntity.ok(ticketService.searchTickets(searchParams));
+    }
+
+    @GetMapping("/autocomplete/artist")
+    public ResponseEntity<List<String>> autocompleteArtists(@RequestParam String query) {
+        return ResponseEntity.ok(spotifyService.searchArtists(query));
+    }
+
+    @GetMapping("/{ticketId}/artist")
+    public ResponseEntity<ArtistDetailsDto> getArtistDetails(@PathVariable("ticketId") Long ticketId) {
+        return ResponseEntity.ok(ticketService.getArtistForTicket(ticketId));
     }
 
     @GetMapping("/{ticketId}")

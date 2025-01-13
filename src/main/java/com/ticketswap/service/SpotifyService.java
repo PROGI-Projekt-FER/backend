@@ -2,6 +2,7 @@ package com.ticketswap.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ticketswap.dto.spotify.ArtistDetailsDto;
 import com.ticketswap.dto.spotify.TokenDto;
 import com.ticketswap.dto.spotify.TokenResponseDto;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,5 +90,42 @@ public class SpotifyService {
         }
 
         return List.of();
+    }
+
+    public ArtistDetailsDto getArtistDetails(String artistName) {
+        authenticate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+        String url = SPOTIFY_BASE_URL + "search?q=" + artistName + "&type=artist&limit=1";
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                url, HttpMethod.GET, entity, String.class);
+
+        if (response.getBody() != null) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode rootNode = objectMapper.readTree(response.getBody());
+
+                JsonNode itemsNode = rootNode.path("artists").path("items");
+
+                ArtistDetailsDto artistDetails = null;
+
+                if (itemsNode.isArray()) {
+                    for (JsonNode item : itemsNode) {
+                        artistDetails = ArtistDetailsDto.map(item);
+                        return artistDetails;
+                    }
+                }
+
+                return artistDetails;
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to parse Spotify search response", e);
+            }
+        }
+
+        throw new RuntimeException("Unable to fetch artist details");
     }
 }

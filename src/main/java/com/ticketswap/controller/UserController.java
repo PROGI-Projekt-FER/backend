@@ -31,19 +31,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private SpotifyService spotifyService;
-
-    @Autowired
-    public UserController(SpotifyService spotifyService) {
-        this.spotifyService = spotifyService;
-    }
-
-    @GetMapping("/autocomplete/artist")
-    public List<String> autocompleteArtists(@RequestParam String query) {
-        return spotifyService.searchArtists(query);
-    }
-
     @GetMapping("/info")
     public ResponseEntity<UserDto> getProfile() {
         User loggedInUser = authService.getLoggedInUser()

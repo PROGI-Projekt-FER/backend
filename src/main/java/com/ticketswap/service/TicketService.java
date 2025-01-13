@@ -1,5 +1,6 @@
 package com.ticketswap.service;
 
+import com.ticketswap.dto.spotify.ArtistDetailsDto;
 import com.ticketswap.dto.ticket.*;
 import com.ticketswap.dto.user.UsernameDto;
 import com.ticketswap.dto.weather.CityDailyForecastDto;
@@ -38,7 +39,19 @@ public class TicketService {
     private EventService eventService;
 
     @Autowired
+    private SpotifyService spotifyService;
+
+    @Autowired
     private TicketTradeHistoryRepository ticketTradeHistoryRepository;
+
+    public ArtistDetailsDto getArtistForTicket(Long ticketId) {
+        Optional<Ticket> ticket = ticketRepository.findById(ticketId);
+        if (ticket.isEmpty()) {
+            throw new ResourceNotFoundException("Ticket with id " + ticketId + " not found.");
+        }
+
+        return spotifyService.getArtistDetails(ticket.get().getEvent().getEventEntity().getName());
+    }
 
     public TicketDetailsDto getTicketById(Long ticketId) {
         Optional<Ticket> ticket = ticketRepository.findById(ticketId);
