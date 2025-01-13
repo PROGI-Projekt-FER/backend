@@ -3,6 +3,7 @@ package com.ticketswap.service;
 import com.ticketswap.dto.swap.RequestDetailsDto;
 import com.ticketswap.dto.ticket.TicketDetailsDto;
 import com.ticketswap.dto.ticket.TicketHistoryDto;
+import com.ticketswap.dto.user.AdminUserDto;
 import com.ticketswap.dto.user.UserDto;
 import com.ticketswap.dto.user.UserEditDto;
 import com.ticketswap.model.*;
@@ -35,9 +36,9 @@ public class UserService {
         return UserDto.map(user);
     }
 
-    public List<UserDto> getAllUsers() {
+    public List<AdminUserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return users.stream().map(UserDto::map).toList();
+        return users.stream().map(AdminUserDto::map).toList();
     }
 
     public void editProfile(User user, UserEditDto userEditDto) {

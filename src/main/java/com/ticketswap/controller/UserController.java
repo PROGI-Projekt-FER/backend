@@ -3,6 +3,7 @@ package com.ticketswap.controller;
 import com.ticketswap.dto.swap.RequestDetailsDto;
 import com.ticketswap.dto.ticket.TicketDetailsDto;
 import com.ticketswap.dto.ticket.TicketHistoryDto;
+import com.ticketswap.dto.user.AdminUserDto;
 import com.ticketswap.dto.user.UserDto;
 import com.ticketswap.dto.user.UserEditDto;
 import com.ticketswap.model.TicketStatus;
@@ -52,11 +53,11 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAllUsers() {
+    public ResponseEntity<List<AdminUserDto>> getAllUsers() {
         User loggedInUser = authService.getLoggedInUser()
                 .orElseThrow(NotLoggedInException::new);
 
-        List<UserDto> users = userService.getAllUsers();
+        List<AdminUserDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
