@@ -16,6 +16,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestDetailsDto {
+
+    private Long requestId;
+
     private TicketDetailsDto sendingTicket;
 
     private TicketDetailsDto receivingTicket;
@@ -28,6 +31,7 @@ public class RequestDetailsDto {
 
     public static RequestDetailsDto map(SwapRequest swapRequest, SwapConfirmation swapConfirmation) {
         RequestDetailsDto requestDetailsDto = new RequestDetailsDto();
+        requestDetailsDto.setRequestId(swapRequest.getId());
         requestDetailsDto.setReceivingTicket(TicketDetailsDto.map(swapRequest.getReceivingTicket()));
         requestDetailsDto.setSendingTicket(TicketDetailsDto.map(swapRequest.getSendingTicket()));
         requestDetailsDto.setConfirmationStatus(swapRequest.getConfirmationStatus());
