@@ -6,12 +6,10 @@ import com.ticketswap.dto.ticket.TicketHistoryDto;
 import com.ticketswap.dto.user.AdminUserDto;
 import com.ticketswap.dto.user.UserDto;
 import com.ticketswap.dto.user.UserEditDto;
-import com.ticketswap.model.TicketStatus;
 import com.ticketswap.model.User;
 import com.ticketswap.service.AuthService;
-import com.ticketswap.service.SpotifyService;
-import com.ticketswap.service.TicketService;
 import com.ticketswap.service.UserService;
+import com.ticketswap.util.NotAuthorizedException;
 import com.ticketswap.util.NotLoggedInException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,9 +39,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<AdminUserDto>> getAllUsers() {
-        User loggedInUser = authService.getLoggedInUser()
-                .orElseThrow(NotLoggedInException::new);
-
+        authService.getLoggedInAdmin().orElseThrow(NotAuthorizedException::new);
         List<AdminUserDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
@@ -89,10 +85,8 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
-        User loggedInUser = authService.getLoggedInUser()
-                .orElseThrow(NotLoggedInException::new);
-
-        userService.deleteUser(userId);
+        authService.getLoggedInAdmin().orElseThrow(NotAuthorizedException::new);
+        userService.deactivateUser(userId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -3,6 +3,7 @@ package com.ticketswap.controller;
 import com.ticketswap.model.CustomOAuth2User;
 import com.ticketswap.model.User;
 import com.ticketswap.repository.UserRepository;
+import com.ticketswap.util.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +33,10 @@ public class DevAuthController {
     private UserRepository userRepository;
 
     @PostMapping("/login-as/{id}")
-    public ResponseEntity<String> loginAs(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<User> loginAs(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            throw new ResourceNotFoundException("User not found");
         }
 
         User user = userOptional.get();
@@ -58,6 +59,6 @@ public class DevAuthController {
         HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
         securityContextRepository.saveContext(context, request, response);
 
-        return ResponseEntity.ok("Logged in as user: " + user.getUsername());
+        return ResponseEntity.ok(user);
     }
 }

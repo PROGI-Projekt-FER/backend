@@ -5,6 +5,7 @@ import com.ticketswap.dto.category.InsertCategoryDto;
 import com.ticketswap.model.User;
 import com.ticketswap.service.AuthService;
 import com.ticketswap.service.CategoryService;
+import com.ticketswap.util.NotAuthorizedException;
 import com.ticketswap.util.NotLoggedInException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,8 +33,7 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<CategoryDto> createCategory(@RequestBody InsertCategoryDto categoryDto) {
-        var loggedInUser = authService.getLoggedInUser()
-                .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
+        authService.getLoggedInAdmin().orElseThrow(NotAuthorizedException::new);
 
         CategoryDto createdCategory = categoryService.createCategory(categoryDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
@@ -41,18 +41,15 @@ public class CategoryController {
 
     @PutMapping("/{categoryId}")
     public ResponseEntity<CategoryDto> updateCategory(@RequestBody InsertCategoryDto categoryDto, @PathVariable Long categoryId) {
+        authService.getLoggedInAdmin().orElseThrow(NotAuthorizedException::new);
         categoryDto.setId(categoryId);
-        var loggedInUser = authService.getLoggedInUser()
-                .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
-
         CategoryDto updatedCategory = categoryService.updateCategory(categoryDto);
         return ResponseEntity.ok(updatedCategory);
     }
 
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
-        var loggedInUser = authService.getLoggedInUser()
-                .orElseThrow(() -> new RuntimeException("Logged-in user not found"));
+        authService.getLoggedInAdmin().orElseThrow(NotAuthorizedException::new);
 
         categoryService.deleteCategory(categoryId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

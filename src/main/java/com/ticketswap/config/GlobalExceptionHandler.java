@@ -1,5 +1,6 @@
 package com.ticketswap.config;
 
+import com.ticketswap.util.NotAuthorizedException;
 import com.ticketswap.util.NotLoggedInException;
 import com.ticketswap.util.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotLoggedInException.class)
     public ResponseEntity<String> handleAuthException() {
         String errorMessage = "You are unauthorized to access this route, please log in.";
+        return new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(NotAuthorizedException.class)
+    public ResponseEntity<String> handleNotAuthorizedException() {
+        String errorMessage = "You are unauthorized to access this route";
         return new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED);
     }
 

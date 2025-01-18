@@ -35,6 +35,10 @@ public class User extends BaseModel{
     @Column(name = "external_id")
     private String externalId;
 
+    @Column(name = "user_role")
+    @Enumerated(value = EnumType.STRING)
+    private UserRole userRole = UserRole.REGULAR;
+
     @ManyToOne
     @JoinColumn(name = "preferred_category_id")
     private Category preferredCategory;

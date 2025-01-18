@@ -32,7 +32,16 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(UserRole.REGULAR.name()));
+        if (user.getUserRole().equals(UserRole.DEACTIVATED)) {
+            return List.of(new SimpleGrantedAuthority(UserRole.DEACTIVATED.name()));
+        } else if (user.getUserRole().equals(UserRole.ADMIN)) {
+            return List.of(
+                    new SimpleGrantedAuthority(UserRole.ADMIN.name()),
+                    new SimpleGrantedAuthority(UserRole.REGULAR.name())
+            );
+        } else {
+            return List.of(new SimpleGrantedAuthority(UserRole.REGULAR.name()));
+        }
     }
 
     @Override

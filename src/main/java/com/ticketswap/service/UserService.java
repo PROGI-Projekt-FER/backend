@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -81,10 +80,9 @@ public class UserService {
                 .toList();
     }
 
-    public void deleteUser(Long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new ResourceNotFoundException("User with ID " + userId + " not found.");
-        }
-        userRepository.deleteById(userId);
+    public void deactivateUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User with ID " + userId + " not found."));
+        user.setUserRole(UserRole.DEACTIVATED);
+        userRepository.save(user);
     }
 }
