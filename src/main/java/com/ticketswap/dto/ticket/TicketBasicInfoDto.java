@@ -22,12 +22,14 @@ public class TicketBasicInfoDto {
     private double price;
     private String description;
     private EventDto event;
+    private List<CategoryDto> categories;
     public static TicketBasicInfoDto map(Ticket ticket) {
         TicketBasicInfoDto dto = new TicketBasicInfoDto();
         dto.setId(ticket.getId());
         dto.setPrice(ticket.getPrice());
         dto.setDescription(ticket.getDescription());
         dto.setEvent(EventDto.map(ticket.getEvent()));
+        dto.setCategories(ticket.getCategories().stream().map(CategoryDto::map).toList());
         return dto;
     }
 }
