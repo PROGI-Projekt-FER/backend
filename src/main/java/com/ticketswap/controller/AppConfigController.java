@@ -35,15 +35,27 @@ public class AppConfigController {
     }
 
     @PostMapping("/make-me-admin")
-    public ResponseEntity<User> makeUserAdmin() {
+    public ResponseEntity<User> makeMeAdmin() {
         User loggedInUser = authService.getLoggedInUser().orElseThrow(NotLoggedInException::new);
         return ResponseEntity.ok(appConfigService.makeUserAdmin(loggedInUser.getId()));
     }
 
+    @PostMapping("/make-user-admin/{userId}")
+    public ResponseEntity<User> makeUserAdmin(@PathVariable Long userId) {
+        authService.getLoggedInAdmin().orElseThrow(NotAuthorizedException::new);
+        return ResponseEntity.ok(appConfigService.makeUserAdmin(userId));
+    }
+
     @PostMapping("/make-me-regular-user")
-    public ResponseEntity<User> makeUserRegular() {
+    public ResponseEntity<User> makeMeRegular() {
         User loggedInUser = authService.getLoggedInUser().orElseThrow(NotLoggedInException::new);
         return ResponseEntity.ok(appConfigService.removeAdminFromUser(loggedInUser.getId()));
+    }
+
+    @PostMapping("/make-regular-user/{userId}")
+    public ResponseEntity<User> makeUserRegular(@PathVariable Long userId) {
+        authService.getLoggedInAdmin().orElseThrow(NotAuthorizedException::new);
+        return ResponseEntity.ok(appConfigService.removeAdminFromUser(userId));
     }
 
 }
