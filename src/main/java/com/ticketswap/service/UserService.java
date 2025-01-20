@@ -75,7 +75,7 @@ public class UserService {
     public List<RequestDetailsDto> getPendingRequests(User loggedInUser) {
         List<SwapRequest> pendingRequests = swapRequestRepository.findAllByReceivingTicketUserId(loggedInUser.getId());
         return pendingRequests.stream()
-                .filter(request -> request.getConfirmationStatus().equals(ConfirmationStatus.PENDING) || request.getSwapCycle() != null)
+                .filter(request -> request.getConfirmationStatus().equals(ConfirmationStatus.PENDING) || (request.getSwapCycle() != null && !request.getSwapCycle().getConfirmationStatus().equals(ConfirmationStatus.APPROVED)))
                 .map(request -> RequestDetailsDto.map(request, null))
                 .toList();
     }
