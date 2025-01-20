@@ -12,4 +12,5 @@ import lombok.Setter;
 public class RequestTicketSwapDto {
     private Long requestingTicketId;
     private Long receivingTicketId;
+    private boolean shouldAttemptSwap = false;
 }

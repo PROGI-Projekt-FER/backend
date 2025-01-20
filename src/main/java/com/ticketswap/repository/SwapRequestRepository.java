@@ -10,4 +10,6 @@ public interface SwapRequestRepository extends JpaRepository<SwapRequest, Long> 
     Optional<SwapRequest> findSwapRequestByReceivingTicketIdAndSendingTicketId(Long receivingTicketId, Long sendingTicketId);
 
     List<SwapRequest> findAllByReceivingTicketUserId(Long receivingTicketUserId);
+
+    List<SwapRequest> findSwapRequestsBySwapCycleId(Integer swapCycleId);
 }

@@ -3,6 +3,7 @@ package com.ticketswap.service;
 import com.ticketswap.model.Ticket;
 import com.ticketswap.model.TicketStatus;
 import com.ticketswap.repository.TicketRepository;
+import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +31,12 @@ public class TicketCleanupService {
         );
         ticketsToDelete.forEach(ticket -> ticket.setStatus(TicketStatus.DELETED));
         ticketRepository.saveAll(ticketsToDelete);
+    }
+
+    @Scheduled(fixedRate = 3600000)
+    public void deactivateExpiredTickets() {
+        List<Ticket> tickets = ticketRepository.findAll().stream().filter(ticket -> ticket.getEvent().getEventDate().isBefore(LocalDateTime.now())).toList();
+        tickets.forEach(ticket -> ticket.setStatus(TicketStatus.DEACTIVATED));
+        ticketRepository.saveAll(tickets);
     }
 }

@@ -26,7 +26,7 @@ public class SwapController {
         User loggedInUser = authService.getLoggedInUser()
                 .orElseThrow(NotLoggedInException::new);
 
-        swapService.requestTicketSwap(loggedInUser, requestTicketSwapDto.getRequestingTicketId(), requestTicketSwapDto.getReceivingTicketId());
+        swapService.requestTicketSwap(loggedInUser, requestTicketSwapDto.getRequestingTicketId(), requestTicketSwapDto.getReceivingTicketId(), requestTicketSwapDto.isShouldAttemptSwap());
 
         return ResponseEntity.ok("Request sent successfully");
     }

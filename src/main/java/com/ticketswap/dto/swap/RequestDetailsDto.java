@@ -29,6 +29,8 @@ public class RequestDetailsDto {
 
     private LocalDateTime respondedAt;
 
+    private ConfirmationStatus swapCycleStatus;
+
     public static RequestDetailsDto map(SwapRequest swapRequest, SwapConfirmation swapConfirmation) {
         RequestDetailsDto requestDetailsDto = new RequestDetailsDto();
         requestDetailsDto.setRequestId(swapRequest.getId());
@@ -38,6 +40,9 @@ public class RequestDetailsDto {
         requestDetailsDto.setSentAt(swapRequest.getCreatedAt());
         if (swapConfirmation != null) {
             requestDetailsDto.setRespondedAt(swapConfirmation.getCreatedAt());
+        }
+        if (swapRequest.getSwapCycle() != null) {
+            requestDetailsDto.setSwapCycleStatus(swapRequest.getSwapCycle().getConfirmationStatus());
         }
         return requestDetailsDto;
     }
