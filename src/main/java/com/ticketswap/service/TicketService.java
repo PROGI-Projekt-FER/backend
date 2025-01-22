@@ -105,6 +105,8 @@ public class TicketService {
 
     public TicketDetailsDto createTicket(TicketInsertDto ticketDetailsDto) {
         Ticket ticket = ticketDetailsDto.toEntity();
+        if (ticket.getEvent().getEventDate().isBefore(LocalDateTime.now())) throw new IllegalArgumentException("Event date can't be in the past");
+        if (ticket.getDescription().length() > 255) throw new IllegalArgumentException("Ticket description must be shorter than 256 characters");
         ticket.setId(null);
         ticket.setCategories(categoryRepository.findAllById(ticket.getCategories().stream().map(Category::getId).toList()));
         ticket.setInterestedInCategories(categoryRepository.findAllById(ticket.getInterestedInCategories().stream().map(Category::getId).toList()));
