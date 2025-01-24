@@ -216,7 +216,7 @@ public class TicketSwapTest {
         venueDto.setLocation(locationDto);
         eventEntityDto.setName("Name Surname");
         eventEntityDto.setType("Music artist");
-        eventDto.setEventDate(LocalDateTime.now().minusDays(2));
+        eventDto.setEventDate(LocalDateTime.now().plusDays(2));
         eventDto.setEventEntity(eventEntityDto);
         eventDto.setVenue(venueDto);
         requestBody.setEvent(eventDto);

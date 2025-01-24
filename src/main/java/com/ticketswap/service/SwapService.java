@@ -109,12 +109,17 @@ public class SwapService {
         if (!receivingTicket.getStatus().equals(TicketStatus.SWAP) || !requestingTicket.getStatus().equals(TicketStatus.SWAP)) throw new Exception("Both tickets need to be of status SWAP");
         if (doesActiveSwapExist(requestingTicketId, receivingTicketId)) throw new Exception("There already exists an active swap for these two tickets");
 
-        if (!areTicketsSwappable(requestingTicket, receivingTicket) && attemptCycle) {
+        if (attemptCycle) {
             createSwapCycle(requestingTicket, receivingTicket);
             return;
-        } else if (!areTicketsSwappable(requestingTicket, receivingTicket)){
-            throw new Exception("Tickets aren't compatible for swap and cycle wasn't requested");
         }
+
+//        if (!areTicketsSwappable(requestingTicket, receivingTicket) && attemptCycle) {
+//            createSwapCycle(requestingTicket, receivingTicket);
+//            return;
+//        } else if (!areTicketsSwappable(requestingTicket, receivingTicket)){
+//            throw new Exception("Tickets aren't compatible for swap and cycle wasn't requested");
+//        }
 
         SwapRequest swapRequest = new SwapRequest();
         swapRequest.setSendingTicket(requestingTicket);

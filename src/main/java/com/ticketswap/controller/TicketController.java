@@ -103,7 +103,7 @@ public class TicketController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTicket);
     }
 
-    @PatchMapping("/{ticketId}/change-status")
+    @PutMapping("/{ticketId}/change-status")
     public ResponseEntity<TicketDetailsDto> toggleTicketStatus(@RequestBody UpdateTicketStatusDto updateTicketStatusDto, @PathVariable("ticketId") Long ticketId) {
         User loggedInUser = authService.getLoggedInUser()
                 .orElseThrow(NotLoggedInException::new);
