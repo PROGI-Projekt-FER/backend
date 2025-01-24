@@ -11,6 +11,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -31,13 +32,14 @@ public class SpotifyService {
     private final RestTemplate restTemplate;
 
     private String accessToken;
+    private Instant tokenExpiryTime;
 
     public SpotifyService() {
         this.restTemplate = new RestTemplate();
     }
 
     private void authenticate() {
-        if (accessToken == null) {
+        if (accessToken == null || Instant.now().isAfter(tokenExpiryTime.minusSeconds(60))) {
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Basic " +
                     Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes()));
@@ -51,6 +53,9 @@ public class SpotifyService {
             if (response.getBody() != null) {
                 TokenDto tokenDto = TokenDto.fromResponse(response.getBody());
                 this.accessToken = tokenDto.getAccessToken();
+
+                Long expiresIn = tokenDto.getExpiresIn();
+                this.tokenExpiryTime = Instant.now().plusSeconds(expiresIn);
             } else {
                 throw new RuntimeException("Failed to authenticate with Spotify API");
             }
