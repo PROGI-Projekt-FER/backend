@@ -24,4 +24,6 @@ public class EventEntity extends BaseModel{
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "artist_id")
+    private String artistId;
 }

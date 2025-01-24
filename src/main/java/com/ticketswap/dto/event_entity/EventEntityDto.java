@@ -15,12 +15,14 @@ public class EventEntityDto {
     private Long id;
     private String name;
     private String type;
+    private String artistId;
 
     public static EventEntityDto map(EventEntity eventEntity) {
         EventEntityDto dto = new EventEntityDto();
         dto.setId(eventEntity.getId());
         dto.setName(eventEntity.getName());
         dto.setType(eventEntity.getType());
+        dto.setArtistId(eventEntity.getArtistId());
         return dto;
     }
 
@@ -29,6 +31,7 @@ public class EventEntityDto {
         eventEntity.setId(id);
         eventEntity.setName(name);
         eventEntity.setType(type);
+        eventEntity.setArtistId(artistId);
         return eventEntity;
     }
 }

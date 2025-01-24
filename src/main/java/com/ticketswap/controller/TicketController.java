@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -60,13 +61,13 @@ public class TicketController {
     }
 
     @GetMapping("/autocomplete/artist")
-    public ResponseEntity<List<String>> autocompleteArtists(@RequestParam String query) {
+    public ResponseEntity<List<Map.Entry<String, String>>> autocompleteArtists(@RequestParam String query) {
         return ResponseEntity.ok(spotifyService.searchArtists(query));
     }
 
-    @GetMapping("/{ticketId}/artist")
-    public ResponseEntity<ArtistDetailsDto> getArtistDetails(@PathVariable("ticketId") Long ticketId) {
-        return ResponseEntity.ok(ticketService.getArtistForTicket(ticketId));
+    @GetMapping("/artist/{artistId}")
+    public ResponseEntity<ArtistDetailsDto> getArtistDetails(@PathVariable("artistId") String artistId) {
+        return ResponseEntity.ok(spotifyService.getArtistDetails(artistId));
     }
 
     @GetMapping("/{ticketId}")

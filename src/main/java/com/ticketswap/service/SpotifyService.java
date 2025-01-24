@@ -1,5 +1,6 @@
 package com.ticketswap.service;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ticketswap.dto.spotify.ArtistDetailsDto;
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,7 +57,7 @@ public class SpotifyService {
         }
     }
 
-    public List<String> searchArtists(String query) {
+    public List<Map.Entry<String, String>> searchArtists(String query) {
         authenticate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -75,15 +77,16 @@ public class SpotifyService {
 
                 JsonNode itemsNode = rootNode.path("artists").path("items");
 
-                List<String> artistNames = new ArrayList<>();
+                List<Map.Entry<String, String>> artistDetails = new ArrayList<>();
                 if (itemsNode.isArray()) {
                     for (JsonNode item : itemsNode) {
                         String artistName = item.path("name").asText();
-                        artistNames.add(artistName);
+                        String artistId = item.path("id").asText();
+                        artistDetails.add(Map.entry(artistName, artistId));
                     }
                 }
 
-                return artistNames;
+                return artistDetails;
             } catch (Exception e) {
                 throw new RuntimeException("Failed to parse Spotify search response", e);
             }
@@ -92,14 +95,14 @@ public class SpotifyService {
         return List.of();
     }
 
-    public ArtistDetailsDto getArtistDetails(String artistName) {
+    public ArtistDetailsDto getArtistDetails(String artistId) {
         authenticate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
 
         HttpEntity<Void> entity = new HttpEntity<>(headers);
-        String url = SPOTIFY_BASE_URL + "search?q=" + artistName + "&type=artist&limit=1";
+        String url = SPOTIFY_BASE_URL + "artists/" + artistId;
 
         ResponseEntity<String> response = restTemplate.exchange(
                 url, HttpMethod.GET, entity, String.class);
@@ -109,16 +112,9 @@ public class SpotifyService {
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode rootNode = objectMapper.readTree(response.getBody());
 
-                JsonNode itemsNode = rootNode.path("artists").path("items");
-
                 ArtistDetailsDto artistDetails = null;
 
-                if (itemsNode.isArray()) {
-                    for (JsonNode item : itemsNode) {
-                        artistDetails = ArtistDetailsDto.map(item);
-                        return artistDetails;
-                    }
-                }
+                artistDetails = ArtistDetailsDto.map(rootNode);
 
                 return artistDetails;
             } catch (Exception e) {
