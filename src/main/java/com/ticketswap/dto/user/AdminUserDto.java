@@ -2,6 +2,7 @@ package com.ticketswap.dto.user;
 
 import com.ticketswap.model.Category;
 import com.ticketswap.model.User;
+import com.ticketswap.model.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ public class AdminUserDto {
     private String email;
     private String username;
     private Category preferredCategory;
-
+    private UserRole userRole;
     public static AdminUserDto map(User user) {
         AdminUserDto dto = new AdminUserDto();
         dto.setId(user.getId());
@@ -29,6 +30,7 @@ public class AdminUserDto {
         dto.setEmail(user.getEmail());
         dto.setUsername(user.getUsername());
         dto.setPreferredCategory(user.getPreferredCategory());
+        dto.setUserRole(user.getUserRole());
         return dto;
     }
 
@@ -41,6 +43,7 @@ public class AdminUserDto {
         user.setEmail(email);
         user.setUsername(username);
         user.setPreferredCategory(category);
+        user.setUserRole(userRole);
         return user;
     }
 }
